@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using CarConfiguratorWebAPICore6.DatabaseContext;
 using CarConfiguratorWebAPICore6.Models;
 using System.Net.Mime;
+using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 namespace CarConfiguratorWebAPICore6.Controllers
 {
@@ -28,7 +30,7 @@ namespace CarConfiguratorWebAPICore6.Controllers
 
         [HttpGet("configtypes")]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetCarConfigOptionsById(int id)
         {
             DBTableAusstattungstypen typ = await _context.Ausstattungstypen.SingleOrDefaultAsync(e => e.id == id);
 
@@ -37,24 +39,17 @@ namespace CarConfiguratorWebAPICore6.Controllers
 
         [HttpGet("configtypes/{name}")]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GetByName(string name)
+        public async Task<IActionResult> GetCarConfigOptionsByName(string name)
         {
             DBTableAusstattungstypen typ = await _context.Ausstattungstypen.SingleOrDefaultAsync(e => e.name == name);
 
             return typ == null ? NotFound() : Ok(typ);
         }
 
-        //[HttpGet("configtypes/all")]
-        //[Produces(MediaTypeNames.Application.Json)]
-        //public async Task<ActionResult<IEnumerable<DBTableAusstattungstypen>>> GetAll()
-        //{
-        //    return Ok(await _context.Ausstattungstypen.ToListAsync());
-        //}
-
         [HttpGet("configtypes/all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CarConfiguratorOption>))]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetCarConfigOptionsAll()
         {
             // get info and value for specific Ausstattung...
             // ... Felgen
@@ -95,13 +90,151 @@ namespace CarConfiguratorWebAPICore6.Controllers
 
         // GET      /bestellung/{id}?more={more}
         // get bestellung by id. If more=TRUE, also return full KFZKonfiguration otherwise only bestellung
+        [HttpGet("bestellung/{bestellnummer}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetBestellungByBestellnummer(int bestellnummer, bool more = true)
+        {
+            //TODO: implement more Parameter
+            var bestellung = await _context.Bestellungen.SingleOrDefaultAsync(e => bestellnummer == e.bestellnummer);
+
+            if (bestellung == null)
+            {
+                return NotFound();
+            }
+
+            var kfzKonfiguration = await _context.KFZKonfiguration.SingleOrDefaultAsync(e => bestellung.kfzkonfiguration_id == e.id);
+
+            if (kfzKonfiguration == null)
+            {
+                return NotFound();
+            }
+
+            var returnObject = new
+            {
+                bestellung = bestellung,
+                kfzKonfiguration = kfzKonfiguration,
+            };
+
+            return Ok(returnObject);
+        }
+
+        public class DBTableKFZKonfigurationLight
+        {
+            public Nullable<int> kfz_id { get; set; }
+            public Nullable<int> motorleistung_id { get; set; }
+            public Nullable<int> felgen_id { get; set; }
+            public Nullable<int> lackierung_id { get; set; }
+        }
+
+        public class PostBestellungBody
+        {
+            public DBTableKFZKonfigurationLight KFZKonfiguration { get; set; }
+            public int bestellnummer { get; set; }
+            public string kundenname { get; set; }
+        }
 
         // POST     /bestellung/[FROMBODY]
+        [HttpPost("bestellung")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> PostBestellung([FromBody] PostBestellungBody data)
+        {
+            var rnd = new Random();
+            var kfzKonfigurationsId = rnd.Next();
+
+            //_b.kFZKonfiguration = kfzKonfigurationsId;
+
+            DBTableKFZKonfiguration KFZKonfiguration = new DBTableKFZKonfiguration()
+            {
+                id = kfzKonfigurationsId,
+                kfz_id = data.KFZKonfiguration.kfz_id,
+                motorleistung_id = data.KFZKonfiguration.motorleistung_id,
+                felgen_id = data.KFZKonfiguration.felgen_id,
+                lackierung_id = data.KFZKonfiguration.lackierung_id
+            };
+
+            var motorleistungObject = await _context.Motorleistung.SingleOrDefaultAsync(e => data.KFZKonfiguration.motorleistung_id == e.id);
+            var felgenObject = await _context.Felgen.SingleOrDefaultAsync(e => data.KFZKonfiguration.felgen_id == e.id);
+            var lackierungObject = await _context.Lackierung.SingleOrDefaultAsync(e => data.KFZKonfiguration.lackierung_id == e.id);
+            var kfzObject = await _context.Kraftfahrzeuge.SingleOrDefaultAsync(e => data.KFZKonfiguration.kfz_id == e.id);
+
+            if (motorleistungObject == null || felgenObject == null || lackierungObject == null || kfzObject == null)
+            {
+                return NotFound();
+            }
+
+            KFZKonfiguration.Motorleistung = motorleistungObject;
+            KFZKonfiguration.Felgen = felgenObject;
+            KFZKonfiguration.Lackierung = lackierungObject;
+
+            decimal sum = kfzObject.grundpreis + motorleistungObject.preis + felgenObject.preis + lackierungObject.preis;
+
+            DBTableBestellungen bestellung = new DBTableBestellungen
+            {
+                id = rnd.Next(),
+                bestellnummer = data.bestellnummer,
+                kundenname = data.kundenname,
+                kfzkonfiguration_id = kfzKonfigurationsId,
+                KFZKonfiguration = KFZKonfiguration,
+                bestelluhrzeit = null, // weird datetime to datetime2 conversion error here so stays null for now
+                bestellsumme = sum
+            };
+
+            if (KFZKonfiguration.Bestellungen == null)
+            {
+                KFZKonfiguration.Bestellungen = new Collection<DBTableBestellungen>();
+            }
+            KFZKonfiguration.Bestellungen.Add(bestellung);
+
+            await _context.KFZKonfiguration.AddAsync(KFZKonfiguration);
+            await _context.Bestellungen.AddAsync(bestellung);
+            await _context.SaveChangesAsync();
+
+            //return CreatedAtAction("GetBestellungByBestellnummer", new {})
+            return Ok();
+        }
 
         // DELETE   /bestellung/{id}
         // deletes bestellung and all asociated table contents
+        [HttpDelete("bestellung/{bestellnummer}")]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> DeleteBestellung(int bestellnummer)
+        {
+            var bestellung = await _context.Bestellungen.SingleOrDefaultAsync(e => bestellnummer == e.bestellnummer);
+            if (bestellung == null)
+            {
+                return NotFound();
+            }
+
+            var KFZKonfiguration = await _context.KFZKonfiguration.SingleOrDefaultAsync(e => bestellung.kfzkonfiguration_id == e.id);
+            if (KFZKonfiguration == null)
+            {
+                return NotFound();
+            }
+
+            _context.KFZKonfiguration.Remove(KFZKonfiguration);
+            _context.Bestellungen.Remove(bestellung);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
 
         // GET      /cars/all
+        [HttpGet("cars/all")]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetCars()
+        {
+            var cars = await _context.Kraftfahrzeuge.ToListAsync();
+            if (cars == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(cars);
+        }
 
         private async Task<bool> AusstattungstypenExists(int id)
         {
