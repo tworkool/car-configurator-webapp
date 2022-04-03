@@ -13,7 +13,7 @@ using System.Net.Mime;
 namespace CarConfiguratorWebAPICore6.Controllers
 {
     //[Route("api/[controller]")]
-    [Route("api/configData")]
+    [Route("api/carconfigurator")]
     [ApiController()]
     public class CarConfiguratorController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace CarConfiguratorWebAPICore6.Controllers
             _logger = logger;
         }
 
-        [HttpGet("get")]
+        [HttpGet("configtypes")]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> GetById(int id)
         {
@@ -35,7 +35,7 @@ namespace CarConfiguratorWebAPICore6.Controllers
             return typ == null ? NotFound() : Ok(typ);
         }
 
-        [HttpGet("get/{name}")]
+        [HttpGet("configtypes/{name}")]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> GetByName(string name)
         {
@@ -44,14 +44,14 @@ namespace CarConfiguratorWebAPICore6.Controllers
             return typ == null ? NotFound() : Ok(typ);
         }
 
-        //[HttpGet("getall")]
+        //[HttpGet("configtypes/all")]
         //[Produces(MediaTypeNames.Application.Json)]
         //public async Task<ActionResult<IEnumerable<DBTableAusstattungstypen>>> GetAll()
         //{
         //    return Ok(await _context.Ausstattungstypen.ToListAsync());
         //}
 
-        [HttpGet("getall")]
+        [HttpGet("configtypes/all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CarConfiguratorOption>))]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> GetAll()
@@ -92,6 +92,16 @@ namespace CarConfiguratorWebAPICore6.Controllers
 
             return Ok(options);
         }
+
+        // GET      /bestellung/{id}?more={more}
+        // get bestellung by id. If more=TRUE, also return full KFZKonfiguration otherwise only bestellung
+
+        // POST     /bestellung/[FROMBODY]
+
+        // DELETE   /bestellung/{id}
+        // deletes bestellung and all asociated table contents
+
+        // GET      /cars/all
 
         private async Task<bool> AusstattungstypenExists(int id)
         {
