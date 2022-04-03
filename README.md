@@ -1,9 +1,9 @@
 # Car Configurator Sample Project
 ## Technical Details
 ### Backend & Database
- - ASP .Net Core MVS Web API application in C# 
- - Entity Framework
- - MS SQL DB
+ - ASP .Net Core 6 MVC Web API application in C# 
+ - Entity Framework (Core) v6
+ - MS SQL DB & SQL Server
 ### Frontend
  - ReactJS + ReduxJS 
  - built with Parcel Bundler v1 
