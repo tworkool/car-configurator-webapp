@@ -1,0 +1,27 @@
+//Ausstattungstypen Table wird bei seitenstart geladen um die verschiedenen Ausstattungen anzuzeigen
+FALSCH! Man könnte einfach alle Ausstattungen direkt laden und dann über einen Bezeichner generisch die Ausstattungstypen getten und anzeigen.
+Die Tabelle ist trotzdem sinnvoll fürs Backend umd den Attributsnamen gegenzuchecken, und den Bezeichner und die Beschreibung für die jeweilige Ausstattung zu definieren
+
+Beim ändern der Ausstattung wird nur im Frontend die Summe kalkuliert.
+Wenn Bestellbestätigung abgesendet werden soll:
+	Benutzer gibt Name an und Sieht finale Summe.
+Wenn Bestellbestätigung final bestätigt:
+	KFZ Table wird gefüllt mit neuer KFZ Konfiguration
+	Bestellung Table wird gefüllt mit neuer Bestellung (im Frontdend wird ID generiert und ans backend gesendet)
+	Bestllnummer kann als URL Parameter genutzt werden um Bestellung einzusehen
+
+
+Optional??:
+	Draft des Autos kann via URL eingesehen werden, d.h. alle Teile sind als Parameter in der URL gelistet
+	Bestellungen erhalten TTL. Invalidator Script checkt täglich ob Bestellungen agelaufen sind und die Tabelleneinträge für KFZ und Bestellungen gelöscht werden können, um die DB clean zu halten.
+
+
+
+Frontend Views:
+
+Car Configurator mit Optionen
+	auf gleicher Seite Button für Bestellung abschicken, wo dann Form angezeigt wird, dasss ausgefüllt werden kann
+	(bei bestätigung der Bestellung wird nächste Seite aufgerufen (persönliche URL für Bestellung))
+
+Bestellbestätigung mit allen Daten des KFZ, Lieferdatum etc.
+	(direkt nach der Bestellung sollte oben angezeigt werden: hier ist ihr persönlicher Link für die Bestellung (dann die URL der Bestellung)) hier könnte man mit Session Storage Arbeiten?

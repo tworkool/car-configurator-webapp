@@ -1,0 +1,4 @@
+SQL Injection Security:
+	on Frontend Input Sanitization
+	on Backend db name and id string check and length cap?
+	Bei URL Parametern der Seite für die jeweiligen Autoteile wird die gehashte ID des Autoteils verwendet, und so auch im Backend gegengecheckt um SQL Injection zu verhindern
