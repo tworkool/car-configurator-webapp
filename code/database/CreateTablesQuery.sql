@@ -48,10 +48,10 @@ CREATE TABLE KFZKonfiguration(
 
 CREATE TABLE Bestellungen(
 	id					INT NOT NULL PRIMARY KEY,
-	kfzkonfiguration_id	INT FOREIGN KEY REFERENCES Kraftfahrzeuge(id),
+	kfzkonfiguration_id	INT FOREIGN KEY REFERENCES KFZKonfiguration(id),
 	kundenname			VARCHAR(255) NOT NULL,
 	bestellnummer		INT NOT NULL,
-	bestelluhrzeit		DATETIME NOT NULL,
+	bestelluhrzeit		DATETIME,
 	bestellsumme		DECIMAL NOT NULL
 );
 
