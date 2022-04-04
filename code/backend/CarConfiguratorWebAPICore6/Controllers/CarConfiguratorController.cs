@@ -19,6 +19,7 @@ namespace CarConfiguratorWebAPICore6.Controllers
     [ApiController()]
     public class CarConfiguratorController : ControllerBase
     {
+        private readonly object API_PATHS;
         private readonly CarConfiguratorDatabaseContext _context;
         private readonly ILogger<CarConfiguratorController> _logger;
 
@@ -26,6 +27,10 @@ namespace CarConfiguratorWebAPICore6.Controllers
         {
             _context = context;
             _logger = logger;
+            API_PATHS = new {
+                configTypes = "configtypes",
+                bestellungen = "bestellungen"
+            };
         }
 
         [HttpGet("configtypes")]
@@ -88,9 +93,9 @@ namespace CarConfiguratorWebAPICore6.Controllers
             return Ok(options);
         }
 
-        // GET      /bestellung/{id}?more={more}
+        // GET      /bestellungen/{id}?more={more}
         // get bestellung by id. If more=TRUE, also return full KFZKonfiguration otherwise only bestellung
-        [HttpGet("bestellung/{bestellnummer}")]
+        [HttpGet("bestellungen/{bestellnummer}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -186,8 +191,8 @@ namespace CarConfiguratorWebAPICore6.Controllers
             public string kundenname { get; set; }
         }
 
-        // POST     /bestellung/[FROMBODY]
-        [HttpPost("bestellung")]
+        // POST     /bestellungen/[FROMBODY]
+        [HttpPost("bestellungen")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> PostBestellung([FromBody] PostBestellungBody data)
@@ -249,7 +254,7 @@ namespace CarConfiguratorWebAPICore6.Controllers
 
         // DELETE   /bestellung/{id}
         // deletes bestellung and all asociated table contents
-        [HttpDelete("bestellung/{bestellnummer}")]
+        [HttpDelete("bestellungen/{bestellnummer}")]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> DeleteBestellung(int bestellnummer)
         {
