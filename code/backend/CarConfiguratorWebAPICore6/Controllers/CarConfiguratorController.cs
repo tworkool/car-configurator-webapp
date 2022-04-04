@@ -97,19 +97,60 @@ namespace CarConfiguratorWebAPICore6.Controllers
         public async Task<IActionResult> GetBestellungByBestellnummer(int bestellnummer, bool more = true)
         {
             //TODO: implement more Parameter
-            var bestellung = await _context.Bestellungen.SingleOrDefaultAsync(e => bestellnummer == e.bestellnummer);
+            var bestellungFull = await _context.Bestellungen.SingleOrDefaultAsync(e => bestellnummer == e.bestellnummer);
 
-            if (bestellung == null)
+            if (bestellungFull == null)
             {
                 return NotFound();
             }
 
-            var kfzKonfiguration = await _context.KFZKonfiguration.SingleOrDefaultAsync(e => bestellung.kfzkonfiguration_id == e.id);
+            var bestellung = new DBTableBestellungenLight()
+            {
+                kfzkonfiguration_id = bestellungFull.kfzkonfiguration_id,
+                kundenname = bestellungFull.kundenname,
+                bestellnummer = bestellungFull.bestellnummer,
+                bestelluhrzeit = bestellungFull.bestelluhrzeit,
+                bestellsumme = bestellungFull.bestellsumme,
+            };
 
-            if (kfzKonfiguration == null)
+            //var kfzKonfigurationen = await _context.KFZKonfiguration.ToListAsync();
+
+            //DBTableKFZKonfigurationLight kfzKonfiguration = null;
+
+            //for (var i = 0; i < kfzKonfigurationen.Count; i++)
+            //{
+            //    if (kfzKonfigurationen[i].id == bestellung.kfzkonfiguration_id)
+            //    {
+            //        kfzKonfiguration = new DBTableKFZKonfigurationLight()
+            //        {
+            //            kfz_id = kfzKonfigurationen[i].kfz_id,
+            //            motorleistung_id = kfzKonfigurationen[i].motorleistung_id,
+            //            felgen_id = kfzKonfigurationen[i].felgen_id,
+            //            lackierung_id = kfzKonfigurationen[i].lackierung_id
+            //        };
+            //        break;
+            //    }
+            //}
+
+            //if (kfzKonfiguration == null)
+            //{
+            //    return NotFound();
+            //}
+
+            var kfzKonfigurationFull = await _context.KFZKonfiguration.SingleOrDefaultAsync(e => bestellung.kfzkonfiguration_id == e.id);
+
+            if (kfzKonfigurationFull == null)
             {
                 return NotFound();
             }
+
+            var kfzKonfiguration = new DBTableKFZKonfigurationLight()
+            {
+                kfz_id = kfzKonfigurationFull.kfz_id,
+                motorleistung_id = kfzKonfigurationFull.motorleistung_id,
+                felgen_id = kfzKonfigurationFull.felgen_id,
+                lackierung_id = kfzKonfigurationFull.lackierung_id
+            };
 
             var returnObject = new
             {
@@ -120,12 +161,22 @@ namespace CarConfiguratorWebAPICore6.Controllers
             return Ok(returnObject);
         }
 
+        // TODO: put Light models into extra class files!
         public class DBTableKFZKonfigurationLight
         {
             public Nullable<int> kfz_id { get; set; }
             public Nullable<int> motorleistung_id { get; set; }
             public Nullable<int> felgen_id { get; set; }
             public Nullable<int> lackierung_id { get; set; }
+        }
+
+        public class DBTableBestellungenLight
+        {
+            public Nullable<int> kfzkonfiguration_id { get; set; }
+            public string kundenname { get; set; }
+            public int bestellnummer { get; set; }
+            public System.DateTime? bestelluhrzeit { get; set; }
+            public decimal bestellsumme { get; set; }
         }
 
         public class PostBestellungBody
