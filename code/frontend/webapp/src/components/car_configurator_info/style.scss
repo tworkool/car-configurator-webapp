@@ -1,0 +1,41 @@
+@import "../../utils/colors";
+
+.wbs-car-configurator-info {
+  position: absolute;
+  left: 100px;
+  bottom: 100px;
+  color: black;
+
+  &__title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  &__sub {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+
+    &__item {
+      line-height: 1.4;
+      &__title {
+        font-weight: lighter;
+        font-size: 0.8rem;
+      }
+
+      &__value {
+        font-weight: normal;
+        font-size: 1rem;
+      }
+    }
+
+    &__separator {
+      height: 3rem;
+      width: 1px;
+      border-right: 1px solid $cgray-1;
+    }
+  }
+}

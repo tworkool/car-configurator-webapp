@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import DatenschutzPage from "../../pages/datenschutz";
-import HomePage from "../../pages/home";
+import BestellungenPage from "../../pages/bestellungen_page";
+import CarConfiguratorPage from "../../pages/car_configurator_page";
 import { CubeSpinner } from "../spinners";
 
 const PageManager = () => {
@@ -9,10 +9,10 @@ const PageManager = () => {
     <>
       <Routes>
         <Route
-          path="/datenschutz"
+          path="/bestellungen"
           element={
             <Suspense fallback={<CubeSpinner />}>
-              <DatenschutzPage />
+              <BestellungenPage />
             </Suspense>
           }
         />
@@ -20,7 +20,7 @@ const PageManager = () => {
           path="/"
           element={
             <Suspense fallback={<CubeSpinner />}>
-              <HomePage />
+              <CarConfiguratorPage />
             </Suspense>
           }
         />

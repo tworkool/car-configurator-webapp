@@ -28,8 +28,8 @@ const appStateInit = {
   messages: [],
   weatherData: {},
   bestellungenData: {},
-  carConfigTypesData: {},
-  carTypesData: {}
+  carConfigTypesData: [],
+  carTypesData: []
 };
 
 // combine all actions here

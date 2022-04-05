@@ -10,13 +10,13 @@ import "./style";
 const App = () => {
   return (
     <div className="wsb-app-container">
-      <NotificationManager />
+      {/* <NotificationManager /> */}
       <Router>
         <div className="wsb-page-wrapper">
           <Header
             links={[
-              { to: "/", label: "Startseite" },
-              { to: "/datenschutz", label: "Datenschutz" },
+              { to: "/", label: "Car Configurator" },
+              { to: "/bestellungen", label: "Bestellungen" },
             ]}
           />
           <PageManager />

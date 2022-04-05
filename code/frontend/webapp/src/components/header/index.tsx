@@ -10,18 +10,20 @@ const Header = (props: headerProps) => {
   const { links } = props;
   return (
     <div className="wbs-header">
-      <div className="wbs-header__nav">
-        {links.map((link, index) => {
-          return (
-            <NavLink
-              key={index}
-              className={({isActive}) => `wbs-header__nav__item ${isActive ? "wbs-header__nav__item--selected" : ""}`}
-              to={link.to}
-            >
-              {link.label}
-            </NavLink>
-          );
-        })}
+      <div className="wbs-header__content">
+        <div className="wbs-header__nav">
+          {links.map((link, index) => {
+            return (
+              <NavLink
+                key={index}
+                className={({isActive}) => `wbs-header__nav__item ${isActive ? "wbs-header__nav__item--selected" : ""}`}
+                to={link.to}
+              >
+                {link.label}
+              </NavLink>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
