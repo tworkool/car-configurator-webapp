@@ -22,4 +22,20 @@ namespace CarConfiguratorWebAPICore6.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DBTableBestellungen> Bestellungen { get; set; }
     }
+
+    public class DBTableKFZKonfigurationLight
+    {
+        public DBTableKraftfahrzeugeLight? kfz { get; set; }
+        public DBTableMotorleistungLight? motorleistung { get; set; }
+        public DBTableFelgenLight? felgen { get; set; }
+        public DBTableLackierungLight? lackierung { get; set; }
+    }
+
+    public class DBTableKFZKonfigurationLightIds
+    {
+        public Nullable<int> kfz_id { get; set; }
+        public Nullable<int> motorleistung_id { get; set; }
+        public Nullable<int> felgen_id { get; set; }
+        public Nullable<int> lackierung_id { get; set; }
+    }
 }

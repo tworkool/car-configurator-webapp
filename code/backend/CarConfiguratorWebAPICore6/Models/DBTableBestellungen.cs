@@ -14,4 +14,13 @@ namespace CarConfiguratorWebAPICore6.Models
         [ForeignKey("kfzkonfiguration_id")]
         public virtual DBTableKFZKonfiguration KFZKonfiguration { get; set; }
     }
+
+    public class DBTableBestellungenLight
+    {
+        public Nullable<int> kfzkonfiguration_id { get; set; }
+        public string kundenname { get; set; }
+        public int bestellnummer { get; set; }
+        public System.DateTime? bestelluhrzeit { get; set; }
+        public decimal bestellsumme { get; set; }
+    }
 }

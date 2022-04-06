@@ -27,7 +27,8 @@ namespace CarConfiguratorWebAPICore6.Controllers
         {
             _context = context;
             _logger = logger;
-            API_PATHS = new {
+            API_PATHS = new
+            {
                 configTypes = "configtypes",
                 bestellungen = "bestellungen"
             };
@@ -96,8 +97,6 @@ namespace CarConfiguratorWebAPICore6.Controllers
         // GET      /bestellungen/{id}?more={more}
         // get bestellung by id. If more=TRUE, also return full KFZKonfiguration otherwise only bestellung
         [HttpGet("bestellungen/{bestellnummer}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> GetBestellungByBestellnummer(int bestellnummer, bool more = true)
         {
@@ -149,12 +148,44 @@ namespace CarConfiguratorWebAPICore6.Controllers
                 return NotFound();
             }
 
+            var kfzKonfigurationKFZFull = await _context.Kraftfahrzeuge.SingleOrDefaultAsync(e => kfzKonfigurationFull.kfz_id == e.id);
+            var kfzKonfigurationMotorleistungFull = await _context.Motorleistung.SingleOrDefaultAsync(e => kfzKonfigurationFull.motorleistung_id == e.id);
+            var kfzKonfigurationFelgenFull = await _context.Felgen.SingleOrDefaultAsync(e => kfzKonfigurationFull.felgen_id == e.id);
+            var kfzKonfigurationLackierungFull = await _context.Lackierung.SingleOrDefaultAsync(e => kfzKonfigurationFull.lackierung_id == e.id);
+
             var kfzKonfiguration = new DBTableKFZKonfigurationLight()
             {
-                kfz_id = kfzKonfigurationFull.kfz_id,
-                motorleistung_id = kfzKonfigurationFull.motorleistung_id,
-                felgen_id = kfzKonfigurationFull.felgen_id,
-                lackierung_id = kfzKonfigurationFull.lackierung_id
+                kfz = kfzKonfigurationKFZFull == null ? null : new DBTableKraftfahrzeugeLight()
+                {
+                    grundpreis = kfzKonfigurationKFZFull.grundpreis,
+                    id = kfzKonfigurationKFZFull.id,
+                    name = kfzKonfigurationKFZFull.name,
+                    klasse = kfzKonfigurationKFZFull.klasse,
+                    hersteller = kfzKonfigurationKFZFull.hersteller,
+                },
+                motorleistung = kfzKonfigurationMotorleistungFull == null ? null : new DBTableMotorleistungLight()
+                {
+                    id = kfzKonfigurationMotorleistungFull.id,
+                    name = kfzKonfigurationMotorleistungFull.name,
+                    attribut = kfzKonfigurationMotorleistungFull.attribut,
+                    beschreibung = kfzKonfigurationMotorleistungFull.beschreibung,
+                    preis = kfzKonfigurationMotorleistungFull.preis,
+                },
+                felgen = kfzKonfigurationFelgenFull == null ? null : new DBTableFelgenLight()
+                {
+                    id = kfzKonfigurationFelgenFull.id,
+                    name = kfzKonfigurationFelgenFull.name,
+                    beschreibung = kfzKonfigurationFelgenFull.beschreibung,
+                    preis = kfzKonfigurationFelgenFull.preis,
+                },
+                lackierung = kfzKonfigurationLackierungFull == null ? null : new DBTableLackierungLight()
+                {
+                    id = kfzKonfigurationLackierungFull.id,
+                    name = kfzKonfigurationLackierungFull.name,
+                    beschreibung = kfzKonfigurationLackierungFull.beschreibung,
+                    preis = kfzKonfigurationLackierungFull.preis,
+                    attribut = kfzKonfigurationLackierungFull.attribut,
+                },
             };
 
             var returnObject = new
@@ -166,27 +197,9 @@ namespace CarConfiguratorWebAPICore6.Controllers
             return Ok(returnObject);
         }
 
-        // TODO: put Light models into extra class files!
-        public class DBTableKFZKonfigurationLight
-        {
-            public Nullable<int> kfz_id { get; set; }
-            public Nullable<int> motorleistung_id { get; set; }
-            public Nullable<int> felgen_id { get; set; }
-            public Nullable<int> lackierung_id { get; set; }
-        }
-
-        public class DBTableBestellungenLight
-        {
-            public Nullable<int> kfzkonfiguration_id { get; set; }
-            public string kundenname { get; set; }
-            public int bestellnummer { get; set; }
-            public System.DateTime? bestelluhrzeit { get; set; }
-            public decimal bestellsumme { get; set; }
-        }
-
         public class PostBestellungBody
         {
-            public DBTableKFZKonfigurationLight KFZKonfiguration { get; set; }
+            public DBTableKFZKonfigurationLightIds KFZKonfiguration { get; set; }
             public int bestellnummer { get; set; }
             public string kundenname { get; set; }
         }
