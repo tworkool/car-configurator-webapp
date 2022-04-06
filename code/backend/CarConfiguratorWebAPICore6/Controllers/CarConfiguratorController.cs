@@ -206,8 +206,7 @@ namespace CarConfiguratorWebAPICore6.Controllers
 
         // POST     /bestellungen/[FROMBODY]
         [HttpPost("bestellungen")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [Produces(MediaTypeNames.Application.Json)]
+        //[Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> PostBestellung([FromBody] PostBestellungBody data)
         {
             var rnd = new Random();
@@ -224,21 +223,57 @@ namespace CarConfiguratorWebAPICore6.Controllers
                 lackierung_id = data.KFZKonfiguration.lackierung_id
             };
 
-            var motorleistungObject = await _context.Motorleistung.SingleOrDefaultAsync(e => data.KFZKonfiguration.motorleistung_id == e.id);
-            var felgenObject = await _context.Felgen.SingleOrDefaultAsync(e => data.KFZKonfiguration.felgen_id == e.id);
-            var lackierungObject = await _context.Lackierung.SingleOrDefaultAsync(e => data.KFZKonfiguration.lackierung_id == e.id);
-            var kfzObject = await _context.Kraftfahrzeuge.SingleOrDefaultAsync(e => data.KFZKonfiguration.kfz_id == e.id);
+            DBTableMotorleistung motorleistungObject = null;
+            DBTableFelgen felgenObject = null;
+            DBTableLackierung lackierungObject = null;
+            if (data.KFZKonfiguration.motorleistung_id != null)
+            {
+                motorleistungObject = await _context.Motorleistung.SingleOrDefaultAsync(e => data.KFZKonfiguration.motorleistung_id == e.id);
+                if (motorleistungObject == null)
+                {
+                    return NotFound();
+                }
+            }
+            if (data.KFZKonfiguration.felgen_id != null)
+            {
+                felgenObject = await _context.Felgen.SingleOrDefaultAsync(e => data.KFZKonfiguration.felgen_id == e.id);
+                if (felgenObject == null)
+                {
+                    return NotFound();
+                }
+            }
+            if (data.KFZKonfiguration.lackierung_id != null)
+            {
+                lackierungObject = await _context.Lackierung.SingleOrDefaultAsync(e => data.KFZKonfiguration.lackierung_id == e.id);
+                if (lackierungObject == null)
+                {
+                    return NotFound();
+                }
+            }
 
-            if (motorleistungObject == null || felgenObject == null || lackierungObject == null || kfzObject == null)
+            var kfzObject = await _context.Kraftfahrzeuge.SingleOrDefaultAsync(e => data.KFZKonfiguration.kfz_id == e.id);
+            if (kfzObject == null)
             {
                 return NotFound();
             }
 
-            KFZKonfiguration.Motorleistung = motorleistungObject;
-            KFZKonfiguration.Felgen = felgenObject;
-            KFZKonfiguration.Lackierung = lackierungObject;
+            decimal sum = kfzObject.grundpreis;
 
-            decimal sum = kfzObject.grundpreis + motorleistungObject.preis + felgenObject.preis + lackierungObject.preis;
+            if (motorleistungObject != null)
+            {
+                KFZKonfiguration.Motorleistung = motorleistungObject;
+                sum += motorleistungObject.preis;
+            }
+            if (felgenObject != null)
+            {
+                KFZKonfiguration.Felgen = felgenObject;
+                sum += felgenObject.preis;
+            }
+            if (lackierungObject != null)
+            {
+                KFZKonfiguration.Lackierung = lackierungObject;
+                sum += lackierungObject.preis;
+            }
 
             DBTableBestellungen bestellung = new DBTableBestellungen
             {
@@ -262,7 +297,8 @@ namespace CarConfiguratorWebAPICore6.Controllers
             await _context.SaveChangesAsync();
 
             //return CreatedAtAction("GetBestellungByBestellnummer", new {})
-            return Ok();
+            var retObject = await _context.Bestellungen.SingleOrDefaultAsync(e => data.bestellnummer == e.id);
+            return Ok(retObject);
         }
 
         // DELETE   /bestellung/{id}
