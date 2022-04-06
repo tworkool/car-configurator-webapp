@@ -3,6 +3,7 @@ import {
   watchGetCars,
   watchGetCarConfigTypes,
   watchGetBestellung,
+  watchPostBestellung,
 } from "./app_state";
 
 // NOT WORKING??
@@ -14,6 +15,7 @@ function* rootSaga() {
   yield fork(watchGetCars);
   yield fork(watchGetCarConfigTypes);
   yield fork(watchGetBestellung);
+  yield fork(watchPostBestellung);
   // code after fork-effect
 }
 

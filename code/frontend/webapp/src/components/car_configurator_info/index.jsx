@@ -50,7 +50,7 @@ const CarConfiguratorInfo = () => {
             {SubItem("Klasse", currentCarInfo.klasse)}
             <div className="wbs-car-configurator-info__sub__separator" />
             {SubItem(
-              "Gesamtpreis (kombiniert)",
+              "Grundpreis",
               `${currentCarInfo.grundpreis} €`
             )}
           </Group>

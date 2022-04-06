@@ -1,17 +1,21 @@
 import { call, put, select, takeLatest } from "redux-saga/effects";
 import {
   setMessages,
-
   failCarTypesDataFetch,
   succeedCarTypesDataFetch,
-
   failCarConfigtypesDataFetch,
   succeedCarConfigtypesDataFetch,
-
   failBestellungenDataFetch,
-  succeedBestellungenDataFetch
+  succeedBestellungenDataFetch,
+  failBestellungenDataPost,
+  succeedBestellungenDataPost,
 } from "../actions/app_state";
-import { CAR_CONFIGTYPES_DATA_FETCH_REQUESTED, CAR_TYPES_DATA_FETCH_REQUESTED, BESTELLUNGEN_DATA_FETCH_REQUESTED } from "../action_types/app_state";
+import {
+  CAR_CONFIGTYPES_DATA_FETCH_REQUESTED,
+  CAR_TYPES_DATA_FETCH_REQUESTED,
+  BESTELLUNGEN_DATA_FETCH_REQUESTED,
+  BESTELLUNGEN_DATA_POST_REQUESTED,
+} from "../action_types/app_state";
 import { getMessages } from "../selectors/appState";
 import BACKEND from "./api/backend";
 
@@ -80,7 +84,10 @@ function* getBestellung(action) {
   const oldMessages = yield select(getMessages);
   console.log("data");
   try {
-    var response = yield call(BACKEND.get_bestellung_bestellnummer, action.payload.bestellnummer);
+    var response = yield call(
+      BACKEND.get_bestellung_bestellnummer,
+      action.payload.bestellnummer
+    );
 
     if (response.status >= 200 && response.status < 300) {
       const data = yield response.json();
@@ -110,6 +117,37 @@ function* getBestellung(action) {
   }
 }
 
+function* postBestellung(action) {
+  const oldMessages = yield select(getMessages);
+  try {
+    var response = yield call(BACKEND.post_bestellung, action.payload.data);
+
+    if (response.status >= 200 && response.status < 300) {
+      const data = yield response.json();
+
+      yield put(succeedBestellungenDataPost({ bestellungenPostData: {suc: true, id: Math.random()*1337} }));
+
+      const newMessage = {
+        level: "success",
+        message: "FETCH SUCCESS",
+        id: new Date().getTime(),
+      };
+      yield put(setMessages({ messages: [...oldMessages, newMessage] }));
+    } else {
+      throw response;
+    }
+  } catch (e) {
+    yield put(failBestellungenDataPost({ bestellungenPostData: {suc: false, id: Math.random()*1337} }));
+
+    const newMessage = {
+      level: "error",
+      message: "Could not fetch weather data",
+      id: new Date().getTime(),
+    };
+    yield put(setMessages({ messages: [...oldMessages, newMessage] }));
+  }
+}
+
 function* watchGetCars() {
   yield takeLatest(CAR_TYPES_DATA_FETCH_REQUESTED, getCars);
 }
@@ -122,4 +160,13 @@ function* watchGetBestellung() {
   yield takeLatest(BESTELLUNGEN_DATA_FETCH_REQUESTED, getBestellung);
 }
 
-export { watchGetCars, watchGetCarConfigTypes, watchGetBestellung };
+function* watchPostBestellung() {
+  yield takeLatest(BESTELLUNGEN_DATA_POST_REQUESTED, postBestellung);
+}
+
+export {
+  watchGetCars,
+  watchGetCarConfigTypes,
+  watchGetBestellung,
+  watchPostBestellung,
+};

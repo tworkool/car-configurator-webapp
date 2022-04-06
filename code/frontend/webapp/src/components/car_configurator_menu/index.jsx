@@ -40,8 +40,8 @@ const CarConfiguratorMenu = (props) => {
 
   const handleOrderAcceptedButton = useCallback(() => {
     //setIsExpanded(false);
-    onOrderAccepted();
-  }, [onOrderAccepted]);
+    onOrderAccepted(selectedItems);
+  }, [onOrderAccepted, selectedItems]);
 
   useEffect(() => {
     if (carConfigTypes !== null) {
@@ -87,7 +87,9 @@ const CarConfiguratorMenu = (props) => {
         className="wbs-car-configuration-menu__extender-button"
         type="button"
         onClick={handleExpanderClicked}
-      ></button>
+      >
+        <div>KONFIGURIEREN</div>
+      </button>
       <div className="wbs-car-configuration-menu__backdrop-bar" />
       <div className="wbs-car-configuration-menu__content-wrapper">
         <div className="wbs-car-configuration-menu__content">
@@ -130,7 +132,8 @@ const CarConfiguratorMenu = (props) => {
                             } m-b-l`}
                             key={ii}
                             shadow="sm"
-                            p="lg"
+                            p="sm"
+                            withBorder
                             onClick={() => {
                               handleSelectionChange(e.typeInfo.name, ee);
                             }}

@@ -28,6 +28,7 @@ const appStateInit = {
   messages: [],
   weatherData: {},
   bestellungenData: null, // object
+  bestellungenPostData: null, // Object
   carConfigTypesData: null, // array
   carTypesData: null // array
 };

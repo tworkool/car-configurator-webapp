@@ -148,7 +148,10 @@ const BestellungenPage = () => {
                     <Divider my="md" variant="dashed" />
                     {Object.keys(bestellungsData?.kfzKonfiguration).map(
                       (e, i) => {
-                        if (i != 0) {
+                        if (
+                          i != 0 &&
+                          bestellungsData?.kfzKonfiguration?.[e]?.name
+                        ) {
                           return (
                             <Group key={i} position="apart">
                               <Text>

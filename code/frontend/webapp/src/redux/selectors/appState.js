@@ -14,4 +14,8 @@ const getBestellungenData = (state) => {
   return state.appState.bestellungenData;
 }
 
-export { getMessages, getCarConfigTypesData, getCarTypesData, getBestellungenData };
+const getBestellungenPostData = (state) => {
+  return state.appState.bestellungenPostData;
+}
+
+export { getMessages, getCarConfigTypesData, getCarTypesData, getBestellungenData, getBestellungenPostData };
