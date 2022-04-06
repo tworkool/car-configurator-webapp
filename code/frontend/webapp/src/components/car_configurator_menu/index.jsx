@@ -39,7 +39,7 @@ const CarConfiguratorMenu = (props) => {
   }, [setIsExpanded]);
 
   const handleOrderAcceptedButton = useCallback(() => {
-    setIsExpanded(false);
+    //setIsExpanded(false);
     onOrderAccepted();
   }, [onOrderAccepted]);
 
@@ -145,6 +145,12 @@ const CarConfiguratorMenu = (props) => {
                               <Text weight={700}>{`${ee.preis} €`}</Text>
                             </Group>
                             <Text>{ee.beschreibung}</Text>
+                            {e?.typeInfo?.attributsname && (
+                              <Group>
+                                <Text>{`${e.typeInfo.attributsname}: `}</Text>
+                                <Text>{ee.attribut}</Text>
+                              </Group>
+                            )}
                           </Card>
                         );
                       })}

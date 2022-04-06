@@ -8,6 +8,7 @@ import PageManager from "../../components/page_manager";
 import "./style";
 
 const App = () => {
+
   return (
     <div className="wsb-app-container">
       {/* <NotificationManager /> */}

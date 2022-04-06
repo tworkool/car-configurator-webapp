@@ -10,4 +10,8 @@ const getCarTypesData = (state) => {
   return state.appState.carTypesData;
 };
 
-export { getMessages, getCarConfigTypesData, getCarTypesData };
+const getBestellungenData = (state) => {
+  return state.appState.bestellungenData;
+}
+
+export { getMessages, getCarConfigTypesData, getCarTypesData, getBestellungenData };

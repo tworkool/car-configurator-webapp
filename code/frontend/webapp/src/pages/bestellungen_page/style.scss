@@ -1,4 +1,11 @@
 .wbs-datenschutz-page {
-  width: fit-content;
-  height: 120vh;
+  width: 100%;
+  /* height: 120vh; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wsb-bestellungs-paper {
+  width: clamp(300px, 40%, 800px);
 }

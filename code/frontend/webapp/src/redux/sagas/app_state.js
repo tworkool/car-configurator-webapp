@@ -78,11 +78,14 @@ function* getCarConfigTypes(action) {
 
 function* getBestellung(action) {
   const oldMessages = yield select(getMessages);
+  console.log("data");
   try {
     var response = yield call(BACKEND.get_bestellung_bestellnummer, action.payload.bestellnummer);
 
     if (response.status >= 200 && response.status < 300) {
       const data = yield response.json();
+
+      console.log(data);
 
       yield put(succeedBestellungenDataFetch({ bestellungenData: data }));
 

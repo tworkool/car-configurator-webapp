@@ -9,6 +9,14 @@ const PageManager = () => {
     <>
       <Routes>
         <Route
+          path="/bestellungen/:id"
+          element={
+            <Suspense fallback={<CubeSpinner />}>
+              <BestellungenPage />
+            </Suspense>
+          }
+        />
+        <Route
           path="/bestellungen"
           element={
             <Suspense fallback={<CubeSpinner />}>
@@ -24,10 +32,7 @@ const PageManager = () => {
             </Suspense>
           }
         />
-        <Route
-          path="*"
-          element={<Navigate to="/" replace/>}
-        />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
