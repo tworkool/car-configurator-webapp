@@ -13,8 +13,9 @@
 
   &__content {
     max-width: 1024px;
+    width: 100%;
     display: flex;
-    justify-content: left;
+    justify-content: space-between;
     align-items: center;
     height: 100%;
   }
@@ -39,5 +40,8 @@
         font-weight: 600;
       }
     }
+  }
+
+  &__acc {
   }
 }

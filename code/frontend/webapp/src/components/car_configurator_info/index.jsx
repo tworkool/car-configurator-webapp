@@ -1,4 +1,5 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Group, Skeleton } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { getCarTypesData } from "../../redux/selectors/appState";
 import "./style";
@@ -7,15 +8,22 @@ const CarConfiguratorInfo = () => {
   const carInfo = useSelector(getCarTypesData);
   const [currentCarIndex, setCurrentCarIndex] = useState(0);
   const [currentCarInfo, setCurrentCarInfo] = useState(null);
+  const [isLoadingData, setIsLoadingData] = useState(true);
 
   useEffect(() => {
-    if ((carInfo !== null | undefined) && carInfo.length > 0) {
+    if (carInfo !== null && carInfo.length > 0) {
       console.log(carInfo);
       setCurrentCarInfo(carInfo[currentCarIndex]);
     } else {
       setCurrentCarInfo(null);
     }
   }, [carInfo, currentCarIndex]);
+
+  useEffect(() => {
+    if (carInfo !== null) {
+      setIsLoadingData(false);
+    }
+  }, [carInfo]);
 
   const SubItem = (title, value) => {
     return (
@@ -34,19 +42,19 @@ const CarConfiguratorInfo = () => {
   return (
     <div className={`wbs-car-configurator-info`}>
       {currentCarInfo !== null && (
-        <>
+        <Skeleton radius="sm" visible={isLoadingData} height={150} width={400}>
           <div className={`wbs-car-configurator-info__title`}>
             {currentCarInfo.name}
           </div>
-          <div className={`wbs-car-configurator-info__sub`}>
+          <Group spacing="lg" className={`wbs-car-configurator-info__sub`}>
             {SubItem("Klasse", currentCarInfo.klasse)}
             <div className="wbs-car-configurator-info__sub__separator" />
             {SubItem(
               "Gesamtpreis (kombiniert)",
               `${currentCarInfo.grundpreis} €`
             )}
-          </div>
-        </>
+          </Group>
+        </Skeleton>
       )}
     </div>
   );

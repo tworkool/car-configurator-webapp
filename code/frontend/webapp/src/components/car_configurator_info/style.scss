@@ -13,12 +13,6 @@
   }
 
   &__sub {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-
     &__item {
       line-height: 1.4;
       &__title {

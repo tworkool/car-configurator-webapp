@@ -12,12 +12,27 @@ $car-config-expander-width: 30px;
   background-color: white;
   /* border-left: 1px solid $cgray-1; */
   /* box-shadow: rgba(0, 0, 0, 0.1) 0px 3px 8px; */
-  width: 5px;
+  //width: 5px;
+  //transition: width 0.5s;
+  width: $car-config-width;
+  transform: translateX(calc(#{$car-config-width} - 5px));
+  transition: transform 0.6s;
+
   height: 100%;
-  transition: width 0.5s;
+  overflow: none;
 
   &--expanded {
-    width: $car-config-width;
+    //width: $car-config-width;
+    transform: translateX(0);
+  }
+
+  &__item-card {
+    border: 1px solid transparent;
+    cursor: pointer;
+
+    &--selected {
+      border-color: $blue-a0;
+    }
   }
 
   &__extender-button {
@@ -46,5 +61,19 @@ $car-config-expander-width: 30px;
     /* border-left: 1px solid lighten($color: $cgray-1, $amount: 15%); */
     bottom: 0;
     top: 0;
+  }
+
+  &__content-wrapper {
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  &__content {
+    padding: 0 20px;
+
+    &__separator {
+      width: 100%;
+      border-bottom: 1px solid $cgray-1;
+    }
   }
 }

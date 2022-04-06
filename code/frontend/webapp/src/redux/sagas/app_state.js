@@ -34,7 +34,7 @@ function* getCars(action) {
       throw response;
     }
   } catch (e) {
-    yield put(failCarTypesDataFetch({ carTypesData: {} }));
+    yield put(failCarTypesDataFetch({ carTypesData: [] }));
 
     const newMessage = {
       level: "error",
@@ -65,7 +65,7 @@ function* getCarConfigTypes(action) {
       throw response;
     }
   } catch (e) {
-    yield put(failCarConfigtypesDataFetch({ carConfigTypesData: {} }));
+    yield put(failCarConfigtypesDataFetch({ carConfigTypesData: [] }));
 
     const newMessage = {
       level: "error",

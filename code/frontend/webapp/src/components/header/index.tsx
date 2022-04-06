@@ -1,5 +1,6 @@
 import * as React from "react";
 import { NavLink } from "react-router-dom";
+import { Avatar } from '@mantine/core';
 import "./style";
 
 type headerProps = {
@@ -23,6 +24,9 @@ const Header = (props: headerProps) => {
               </NavLink>
             );
           })}
+        </div>
+        <div className="wbs-header__acc">
+          <Avatar color="cyan" radius="xl">MK</Avatar>
         </div>
       </div>
     </div>

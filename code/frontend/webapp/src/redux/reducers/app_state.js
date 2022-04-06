@@ -27,9 +27,9 @@ import { actionReducer } from "./utils/reducers";
 const appStateInit = {
   messages: [],
   weatherData: {},
-  bestellungenData: {},
-  carConfigTypesData: [],
-  carTypesData: []
+  bestellungenData: null, // object
+  carConfigTypesData: null, // array
+  carTypesData: null // array
 };
 
 // combine all actions here
