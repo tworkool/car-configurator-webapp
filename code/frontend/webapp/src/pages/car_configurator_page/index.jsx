@@ -4,7 +4,10 @@ import CarConfiguratorInfo from "../../components/car_configurator_info";
 import CarConfiguratorMenu from "../../components/car_configurator_menu";
 import PorscheImageForegroundLarge from "../../assets/images/porsche-model-largev2.png";
 import { AlertCircle, At, Check } from "tabler-icons-react";
-import { getBestellungenPostData } from "../../redux/selectors/appState";
+import {
+  getBestellungenPostData,
+  getCarTypesData,
+} from "../../redux/selectors/appState";
 import {
   requestCarTypesDataFetch,
   requestCarConfigtypesDataFetch,
@@ -15,6 +18,7 @@ import {
   Alert,
   Button,
   Image,
+  LoadingOverlay,
   Modal,
   Space,
   Text,
@@ -41,6 +45,20 @@ const CarConfiguratorPage = () => {
     kundenname: "",
   });
 
+  const carTypesData = useSelector(getCarTypesData);
+  const [currentCarIndex, setCurrentCarIndex] = useState(0);
+  const [currentCarInfo, setCurrentCarInfo] = useState(null);
+  const [isLoadingCarTypesData, setIsLoadingarTypesData] = useState(true);
+
+  useEffect(() => {
+    if (carTypesData !== null && carTypesData.length > 0) {
+      setCurrentCarInfo(carTypesData[currentCarIndex]);
+    } else {
+      setCurrentCarInfo(null);
+    }
+    setIsLoadingarTypesData(false);
+  }, [carTypesData, currentCarIndex]);
+
   useEffect(() => {
     dispatch(requestCarConfigtypesDataFetch());
     dispatch(requestCarTypesDataFetch());
@@ -66,6 +84,7 @@ const CarConfiguratorPage = () => {
 
   return (
     <div className="wsb-page wbs-carconfigurator-page">
+      <LoadingOverlay visible={isLoadingCarTypesData} />
       <div className="wbs-carconfigurator-page__backdrop">
         {/* <Image
           className="wbs-carconfigurator-page__backdrop__img"
@@ -79,7 +98,7 @@ const CarConfiguratorPage = () => {
           src={PorscheImageForegroundLarge}
         ></Image>
       </div>
-      <CarConfiguratorInfo />
+      <CarConfiguratorInfo currentCarInfo={currentCarInfo} />
       <CarConfiguratorMenu
         onOrderAccepted={(items) => {
           setOrderOptions((old) => ({

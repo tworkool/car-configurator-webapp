@@ -4,20 +4,14 @@ import {
   Divider,
   Group,
   Image,
-  Loader,
+  LoadingOverlay,
   NumberInput,
   Paper,
   Space,
   Text,
   Title,
 } from "@mantine/core";
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useLayoutEffect,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { getBestellungenData } from "../../redux/selectors/appState";
@@ -47,7 +41,6 @@ const BestellungenPage = () => {
       setBestellungsDataRequestFailed(true);
     } else {
       setBestellungsDataRequestFailed(false);
-      console.log(bestellungsData);
     }
     setIsDataLoading(false);
   }, [bestellungsData]);
@@ -84,100 +77,102 @@ const BestellungenPage = () => {
       <Paper withBorder shadow="xl" p="xl" className="wsb-bestellungs-paper">
         <Title order={1}>Bestellung</Title>
         <Divider />
-        <Space h="md" />
-        {isDataLoading ? (
-          <Loader />
-        ) : (
-          <>
-            {bestellungsNummerParam === null ? (
-              <>
-                <NumberInput
-                  ref={ref}
-                  defaultValue={18}
-                  placeholder="Bestellnummer"
-                  label="Bestellnummer"
-                  required
-                />
-                <Space h="md" />
-                <Button onClick={handleBestellnummerSubmit}>
-                  Bestellung suchen
-                </Button>
-              </>
-            ) : (
-              <>
-                {bestellungsDataRequestFailed ? (
-                  <Alert
-                    icon={<AlertCircle size={16} />}
-                    title="Oops!"
-                    color="red"
-                  >
-                    Es scheint, als würde es diese Bestellung nicht geben.
-                  </Alert>
-                ) : (
-                  <>
-                    <Group position="apart">
-                      <Text>{`Bestellnummer: `}</Text>
-                      <Text weight={700}>{bestellungsNummerParam}</Text>
-                    </Group>
-                    <Divider
-                      my="md"
-                      label="Kundendaten"
-                      labelPosition="center"
-                    />
-                    <Group position="apart">
-                      <Text>{`Kundenname: `}</Text>
-                      <Text>{bestellungsData?.bestellung?.kundenname}</Text>
-                    </Group>
-                    <Divider
-                      my="md"
-                      label="KFZ Konfiguration"
-                      labelPosition="center"
-                    />
-                    <Image
-                      fit="contain"
-                      src={PorscheImageForegroundLarge}
-                    ></Image>
-                    <Group position="apart">
-                      <Text>
-                        {bestellungsData?.kfzKonfiguration?.kfz?.name}
-                      </Text>
-                      <Text
-                        weight={700}
-                      >{`${bestellungsData?.kfzKonfiguration?.kfz?.grundpreis} €`}</Text>
-                    </Group>
-                    <Divider my="md" variant="dashed" />
-                    {Object.keys(bestellungsData?.kfzKonfiguration).map(
-                      (e, i) => {
-                        if (
-                          i != 0 &&
-                          bestellungsData?.kfzKonfiguration?.[e]?.name
-                        ) {
-                          return (
-                            <Group key={i} position="apart">
-                              <Text>
-                                {bestellungsData?.kfzKonfiguration?.[e]?.name}
-                              </Text>
-                              <Text
-                                weight={700}
-                              >{`${bestellungsData?.kfzKonfiguration?.[e]?.preis} €`}</Text>
-                            </Group>
-                          );
+        <div className="wsb-bestellungs-paper__content">
+          <Space h="md" />
+          {isDataLoading ? (
+            <LoadingOverlay visible={isDataLoading} />
+          ) : (
+            <>
+              {bestellungsNummerParam === null ? (
+                <>
+                  <NumberInput
+                    ref={ref}
+                    defaultValue={18}
+                    placeholder="Bestellnummer"
+                    label="Bestellnummer"
+                    required
+                  />
+                  <Space h="md" />
+                  <Button onClick={handleBestellnummerSubmit}>
+                    Bestellung suchen
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {bestellungsDataRequestFailed ? (
+                    <Alert
+                      icon={<AlertCircle size={16} />}
+                      title="Oops!"
+                      color="red"
+                    >
+                      Es scheint, als würde es diese Bestellung nicht geben.
+                    </Alert>
+                  ) : (
+                    <>
+                      <Group position="apart">
+                        <Text>{`Bestellnummer: `}</Text>
+                        <Text weight={700}>{bestellungsNummerParam}</Text>
+                      </Group>
+                      <Divider
+                        my="md"
+                        label="Kundendaten"
+                        labelPosition="center"
+                      />
+                      <Group position="apart">
+                        <Text>{`Kundenname: `}</Text>
+                        <Text>{bestellungsData?.bestellung?.kundenname}</Text>
+                      </Group>
+                      <Divider
+                        my="md"
+                        label="KFZ Konfiguration"
+                        labelPosition="center"
+                      />
+                      <Image
+                        fit="contain"
+                        src={PorscheImageForegroundLarge}
+                      ></Image>
+                      <Group position="apart">
+                        <Text>
+                          {bestellungsData?.kfzKonfiguration?.kfz?.name}
+                        </Text>
+                        <Text
+                          weight={700}
+                        >{`${bestellungsData?.kfzKonfiguration?.kfz?.grundpreis} €`}</Text>
+                      </Group>
+                      <Divider my="md" variant="dashed" />
+                      {Object.keys(bestellungsData?.kfzKonfiguration).map(
+                        (e, i) => {
+                          if (
+                            i != 0 &&
+                            bestellungsData?.kfzKonfiguration?.[e]?.name
+                          ) {
+                            return (
+                              <Group key={i} position="apart">
+                                <Text>
+                                  {bestellungsData?.kfzKonfiguration?.[e]?.name}
+                                </Text>
+                                <Text
+                                  weight={700}
+                                >{`${bestellungsData?.kfzKonfiguration?.[e]?.preis} €`}</Text>
+                              </Group>
+                            );
+                          }
                         }
-                      }
-                    )}
-                    <Space h="md" />
-                    <Group position="apart">
-                      <Text weight={700}>{`Summe: `}</Text>
-                      <Text weight={700}>
-                        {`${bestellungsData?.bestellung?.bestellsumme} €`}
-                      </Text>
-                    </Group>
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
+                      )}
+                      <Space h="md" />
+                      <Group position="apart">
+                        <Text weight={700}>{`Summe: `}</Text>
+                        <Text weight={700}>
+                          {`${bestellungsData?.bestellung?.bestellsumme} €`}
+                        </Text>
+                      </Group>
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
       </Paper>
     </div>
   );

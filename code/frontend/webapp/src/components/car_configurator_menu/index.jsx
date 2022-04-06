@@ -104,8 +104,7 @@ const CarConfiguratorMenu = (props) => {
           <Skeleton radius="sm" visible={isLoadingData}>
             {alteredCarConfigTypesData == null ? (
               <Alert icon={<AlertCircle size={16} />} title="Oops!" color="red">
-                The data could not be loaded correctly. Please try to reload the
-                page!
+                Die Daten konnten nicht korrekt geladen werden, bitte probiere die Seite neu zu laden.
               </Alert>
             ) : (
               <Accordion offsetIcon={false}>

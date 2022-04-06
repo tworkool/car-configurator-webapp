@@ -4,26 +4,27 @@ import { useSelector } from "react-redux";
 import { getCarTypesData } from "../../redux/selectors/appState";
 import "./style";
 
-const CarConfiguratorInfo = () => {
-  const carInfo = useSelector(getCarTypesData);
+const CarConfiguratorInfo = (props) => {
+  const { currentCarInfo } = props;
+  /* const carInfo = useSelector(getCarTypesData);
   const [currentCarIndex, setCurrentCarIndex] = useState(0);
   const [currentCarInfo, setCurrentCarInfo] = useState(null);
-  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(true); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (carInfo !== null && carInfo.length > 0) {
       console.log(carInfo);
       setCurrentCarInfo(carInfo[currentCarIndex]);
     } else {
       setCurrentCarInfo(null);
     }
-  }, [carInfo, currentCarIndex]);
+  }, [carInfo, currentCarIndex]); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (carInfo !== null) {
       setIsLoadingData(false);
     }
-  }, [carInfo]);
+  }, [carInfo]); */
 
   const SubItem = (title, value) => {
     return (
@@ -42,19 +43,16 @@ const CarConfiguratorInfo = () => {
   return (
     <div className={`wbs-car-configurator-info`}>
       {currentCarInfo !== null && (
-        <Skeleton radius="sm" visible={isLoadingData} height={150} width={400}>
+        <>
           <div className={`wbs-car-configurator-info__title`}>
-            {currentCarInfo.name}
+            {currentCarInfo?.name}
           </div>
           <Group spacing="lg" className={`wbs-car-configurator-info__sub`}>
-            {SubItem("Klasse", currentCarInfo.klasse)}
+            {SubItem("Klasse", currentCarInfo?.klasse)}
             <div className="wbs-car-configurator-info__sub__separator" />
-            {SubItem(
-              "Grundpreis",
-              `${currentCarInfo.grundpreis} €`
-            )}
+            {SubItem("Grundpreis", `${currentCarInfo?.grundpreis} €`)}
           </Group>
-        </Skeleton>
+        </>
       )}
     </div>
   );
